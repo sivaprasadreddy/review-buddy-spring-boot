@@ -1,0 +1,13 @@
+# review-buddy
+
+## Prerequisites
+* JDK 25
+* Docker and Docker Compose
+
+Install JDK, Maven, Gradle,  etc using [SDKMAN](https://sdkman.io/)
+
+```shell
+$ curl -s "https://get.sdkman.io" | bash
+$ source "$HOME/.sdkman/bin/sdkman-init.sh"
+$ sdk env install
+```

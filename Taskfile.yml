@@ -1,0 +1,72 @@
+version: '3'
+
+vars:
+  GOOS: "{{default OS .GOOS}}"
+  MVNW: '{{if eq .GOOS "windows"}}mvnw.cmd{{else}}./mvnw{{end}}'
+  SLEEP_CMD: '{{if eq .GOOS "windows"}}timeout{{else}}sleep{{end}}'
+  DC_FILE: "compose.yml"
+  REGISTRY: 'docker.io'
+  IMAGE_NAME: 'your_dockerhub_username/review-buddy'
+  DOCKER_IMAGE_NAME: '{{.REGISTRY}}/{{.IMAGE_NAME}}'
+  VERSION:
+    sh: '{{.MVNW}} help:evaluate -Dexpression=project.version -q -DforceStdout'
+
+tasks:
+  default:
+    cmds:
+      - task: test
+
+  format:
+    desc: Formats code
+    cmds:
+      - "{{.MVNW}} spotless:apply"
+
+  test:
+    desc: Run all the tests
+    deps: [ format ]
+    cmds:
+      - "{{.MVNW}} clean verify"
+
+  verify:
+    desc: Run verification checks
+    cmds:
+      - "{{.MVNW}} -ntp verify"
+
+  build_image:
+    desc: Build Docker Image using Buildpacks
+    cmds:
+      - "{{.MVNW}} clean compile spring-boot:build-image -DskipTests -DdockerImageName={{.DOCKER_IMAGE_NAME}}:{{.VERSION}}"
+
+  push_image:
+    desc: Push Docker Image to Registry
+    cmds:
+      - task: build_image
+      - docker tag {{.DOCKER_IMAGE_NAME}}:{{.VERSION}} {{.DOCKER_IMAGE_NAME}}:latest
+      - docker push {{.DOCKER_IMAGE_NAME}}:{{.VERSION}}
+      - docker push {{.DOCKER_IMAGE_NAME}}:latest
+
+  start:
+    desc: Start the application
+    deps: [ build_image ]
+    cmds:
+      - docker compose --profile app -f "{{.DC_FILE}}" up --force-recreate -d
+
+  stop:
+    desc: Stop the application
+    cmds:
+      - docker compose --profile app -f "{{.DC_FILE}}" stop
+      - docker compose --profile app -f "{{.DC_FILE}}" rm -f
+
+  restart:
+    desc: Restarts the application
+    cmds:
+      - task: stop
+      - task: sleep
+      - task: start
+
+  sleep:
+    desc: Sleeps for the given number of seconds
+    vars:
+      DURATION: "{{default 5 .DURATION}}"
+    cmds:
+      - "{{.SLEEP_CMD}} {{.DURATION}}"
