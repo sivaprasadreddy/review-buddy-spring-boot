@@ -1,142 +1,93 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:hx="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
-    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="#{app.name}">review-buddy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title layout:title-pattern="$CONTENT_TITLE · $LAYOUT_TITLE" th:text="#{app.name}">Review Buddy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&amp;display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="/webjars/font-awesome/css/all.css">
-        <link rel="stylesheet" th:href="@{/css/styles.css}"/>
-        <script>
-            function toggleMobileMenu() {
-                const menu = document.getElementById('mobile-menu');
-                menu.classList.toggle('hidden');
-            }
-            function toggleUserDropdown() {
-                const dropdown = document.getElementById('user-dropdown');
-                dropdown.classList.toggle('hidden');
-            }
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(event) {
-                const dropdown = document.getElementById('user-dropdown');
-                const button = document.getElementById('user-menu-button');
-                if (dropdown && button && !button.contains(event.target) && !dropdown.contains(event.target)) {
-                    dropdown.classList.add('hidden');
-                }
-            });
-        </script>
+    <script th:src="@{/js/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
-<body class="bg-gray-50">
-<nav class="bg-gray-800 fixed w-full z-10 top-0">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between">
-            <div class="flex items-center">
-                <a th:href="@{/}" class="text-white text-xl font-bold" th:text="#{app.name}">review-buddy</a>
-            </div>
-            <div class="hidden md:block">
-                <div class="ml-4 flex items-center md:ml-6 space-x-4">
-                    <div sec:authorize="isAnonymous()">
-                        <a th:href="@{/login}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                        <a th:href="@{/registration}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                            <i class="fas fa-user-plus"></i> Register
-                        </a>
-                    </div>
-                    <div sec:authorize="isAuthenticated()" class="relative">
-                        <button type="button" onclick="toggleUserDropdown()" id="user-menu-button" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                            <i class="fas fa-user mr-2"></i>
-                            <i class="fas fa-chevron-down ml-2"></i>
+<body class="flex min-h-screen flex-col bg-white font-sans leading-relaxed text-black">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="sticky top-0 z-10 border-b border-line bg-white">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-3 md:min-h-16">
+        <a th:href="@{/}" class="flex items-center gap-2 font-heading text-xl font-extrabold">
+            <span class="rounded-lg bg-green px-2" aria-hidden="true">★</span>
+            <span th:text="#{app.name}">Review Buddy</span>
+        </a>
+        <button type="button" id="mobile-menu-button" class="rounded-lg border-2 border-black px-3 py-1.5 md:hidden"
+                aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
+        <nav id="mobile-menu" aria-label="Main navigation" class="hidden w-full flex-wrap items-center gap-1.5 md:flex md:w-auto">
+            <a th:href="@{/}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Home</a>
+            <th:block sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Log in</a>
+                <a th:href="@{/registration}" class="rounded-full border-2 border-black bg-black px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-neutral-700">Sign up</a>
+            </th:block>
+            <details sec:authorize="isAuthenticated()" id="user-menu" class="relative max-w-full">
+                <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full px-3 py-2 font-medium hover:bg-green-soft">
+                    <i class="fas fa-user" aria-hidden="true"></i>
+                    <span class="break-all" sec:authentication="principal.name">User</span>
+                    <i class="fas fa-chevron-down text-xs" aria-hidden="true"></i>
+                </summary>
+                <div class="absolute right-0 z-20 mt-2 w-48 rounded-2xl border-2 border-black bg-white p-2">
+                    <form method="post" th:action="@{/logout}">
+                        <button type="submit" class="w-full rounded-lg px-3 py-2 text-left font-medium hover:bg-green-soft">
+                            <i class="fas fa-sign-out-alt mr-2" aria-hidden="true"></i>Log out
                         </button>
-                        <div id="user-dropdown" class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5">
-                            <a th:href="@{/dashboard}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                            </a>
-                            <hr class="my-1 border-gray-200">
-                            <form method="post" th:action="@{/logout}">
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-            </div>
-            <div class="md:hidden">
-                <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+            </details>
+        </nav>
+    </div>
+</header>
+
+<main id="main-content" class="flex-1" tabindex="-1">
+    <div th:if="${successMessage}" class="mx-auto max-w-6xl px-5 pt-6">
+        <div class="flex items-start gap-3 rounded-2xl border-2 border-black bg-green-soft p-4" role="status">
+            <i class="fas fa-check-circle mt-1" aria-hidden="true"></i>
+            <p class="flex-1" th:text="${successMessage}"></p>
+            <button type="button" data-dismiss-alert aria-label="Dismiss success message" class="rounded px-1 hover:bg-green">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
-    <div class="md:hidden hidden" id="mobile-menu">
-        <div class="space-y-1 px-2 pb-3 pt-2">
-            <div sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
-                <a th:href="@{/registration}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
-                    <i class="fas fa-user-plus"></i> Register
-                </a>
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <form method="post" th:action="@{/logout}">
-                    <button type="submit" class="text-gray-300 hover:bg-gray-700 hover:text-white w-full text-left px-3 py-2 rounded-md text-base font-medium">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            </div>
+    <div th:if="${errorMessage}" class="mx-auto max-w-6xl px-5 pt-6">
+        <div class="flex items-start gap-3 rounded-2xl border-2 border-red-700 bg-red-50 p-4 text-red-800" role="alert">
+            <i class="fas fa-exclamation-circle mt-1" aria-hidden="true"></i>
+            <p class="flex-1" th:text="${errorMessage}"></p>
+            <button type="button" data-dismiss-alert aria-label="Dismiss error message" class="rounded px-1 hover:bg-red-100">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
-</nav>
+    <div layout:fragment="content"></div>
+</main>
 
-<div class="pt-20 pb-8">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div th:if="${successMessage}" class="mb-4 rounded-lg bg-green-50 p-4 border border-green-200">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-400"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-green-800" th:text="${successMessage}"></p>
-                </div>
-                <div class="ml-auto pl-3">
-                    <button type="button" onclick="this.parentElement.parentElement.parentElement.remove()" class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
+<footer class="bg-black py-10 text-white">
+    <div class="mx-auto flex max-w-6xl flex-wrap justify-between gap-6 px-5">
+        <div>
+            <a th:href="@{/}" class="font-heading font-bold"><span aria-hidden="true">★</span> Review Buddy</a>
+            <p>Honest reviews for products people built.</p>
         </div>
-
-        <div th:if="${errorMessage}" class="mb-4 rounded-lg bg-red-50 p-4 border border-red-200">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-400"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-red-800" th:text="${errorMessage}"></p>
-                </div>
-                <div class="ml-auto pl-3">
-                    <button type="button" onclick="this.parentElement.parentElement.parentElement.remove()" class="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div layout:fragment="content">
-            <!-- Your Page Content Here -->
-        </div>
+        <nav aria-label="Footer navigation" class="flex flex-wrap gap-4 text-green">
+            <a th:href="@{/}" class="hover:underline">Home</a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}" class="hover:underline">Log in</a>
+            <a sec:authorize="isAnonymous()" th:href="@{/registration}" class="hover:underline">Sign up</a>
+        </nav>
     </div>
-</div>
+</footer>
+<script th:src="@{/js/site.js}"></script>
 <script th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
-
-<div layout:fragment="pageScripts">
-</div>
+<div layout:fragment="pageScripts"></div>
 </body>
 </html>

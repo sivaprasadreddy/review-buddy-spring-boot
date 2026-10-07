@@ -1,67 +1,40 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Registration</title>
+    <title>Sign up</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex min-h-[calc(100dvh-8rem)] items-center justify-center py-6">
-        <div class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
-            <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-sky-900 px-8 py-8 text-center text-white">
-                <span class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-2xl ring-1 ring-white/20">
-                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
-                </span>
-                <h1 class="mt-4 text-2xl font-bold">Create your account</h1>
-                <p class="mt-1 text-sm text-slate-300">Join the platform.</p>
-            </div>
-            <div class="p-6 sm:p-8">
-                <div class="mb-5 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert" th:if="${errorMessage}">
-                    <i class="fa-solid fa-circle-exclamation mr-2" aria-hidden="true"></i><span th:text="${errorMessage}"></span>
-                </div>
-                <form id="registrationForm" method="post" th:action="@{/registration}" th:object="${user}" class="space-y-5">
-                    <div>
-                        <label for="name" class="mb-2 block text-sm font-semibold text-slate-700">Name <span class="text-rose-600">*</span></label>
-                        <input type="text" id="name" name="name" required autocomplete="name"
-                               th:field="*{name}"
-                               class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
-                               th:classappend="${#fields.hasErrors('name')} ? ' border-rose-500 ring-1 ring-rose-500' : ''"
-                               placeholder="Your name"/>
-                        <div class="mt-1.5 text-sm font-medium text-rose-600" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
-                    </div>
-                    <div>
-                        <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">Email <span class="text-rose-600">*</span></label>
-                        <input type="email" id="email" name="email" required autocomplete="email"
-                               th:field="*{email}"
-                               class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
-                               th:classappend="${#fields.hasErrors('email')} ? ' border-rose-500 ring-1 ring-rose-500' : ''"
-                               placeholder="you@example.com" />
-                        <div class="mt-1.5 text-sm font-medium text-rose-600" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
-                    </div>
-                    <div>
-                        <label for="password" class="mb-2 block text-sm font-semibold text-slate-700">Password <span class="text-rose-600">*</span></label>
-                        <input type="password" id="password" name="password" required autocomplete="new-password"
-                               th:field="*{password}"
-                               class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
-                               th:classappend="${#fields.hasErrors('password')} ? ' border-rose-500 ring-1 ring-rose-500' : ''"
-                               placeholder="At least 4 characters" />
-                        <div class="mt-1.5 text-sm font-medium text-rose-600" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
-                    </div>
-                    <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-                        <i class="fa-solid fa-user-plus" aria-hidden="true"></i>Create account
-                    </button>
-                </form>
-                <div class="mt-6 border-t border-slate-200 pt-5 text-center text-sm text-slate-600">
-                    Already registered?
-                    <a class="font-semibold text-sky-700 hover:text-sky-800 hover:underline" th:href="@{/login}">Sign in</a>
-                </div>
-            </div>
+    <section class="bg-green-soft px-5 py-14">
+        <div class="mx-auto max-w-md rounded-3xl border-2 border-black bg-white p-6 sm:p-8">
+            <h1 class="font-heading text-3xl font-bold">Create your account</h1>
+            <form id="registrationForm" method="post" th:action="@{/registration}" th:object="${user}">
+                <label for="name" class="mb-1.5 mt-4 block font-semibold">Name</label>
+                <input type="text" id="name" name="name" required autocomplete="name"
+                       th:field="*{name}" class="w-full rounded-lg border-2 border-black bg-white px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-green" th:errorclass="field-error"
+                       th:attr="aria-invalid=${#fields.hasErrors('name')},aria-describedby=${#fields.hasErrors('name')} ? 'name-error' : null"
+                       placeholder="Your name"/>
+                <p id="name-error" class="mt-1.5 text-sm text-red-700" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                <label for="email" class="mb-1.5 mt-4 block font-semibold">Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email"
+                       th:field="*{email}" class="w-full rounded-lg border-2 border-black bg-white px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-green" th:errorclass="field-error"
+                       th:attr="aria-invalid=${#fields.hasErrors('email')},aria-describedby=${#fields.hasErrors('email')} ? 'email-error' : null"
+                       placeholder="you@example.com"/>
+                <p id="email-error" class="mt-1.5 text-sm text-red-700" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                <label for="password" class="mb-1.5 mt-4 block font-semibold">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="new-password"
+                       th:field="*{password}" class="w-full rounded-lg border-2 border-black bg-white px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-green" th:errorclass="field-error"
+                       th:attr="aria-invalid=${#fields.hasErrors('password')},aria-describedby=${#fields.hasErrors('password')} ? 'password-error' : null"
+                       placeholder=""/>
+                <p id="password-error" class="mt-1.5 text-sm text-red-700" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                <button type="submit" class="mt-4 w-full rounded-full border-2 border-black bg-green px-5 py-2.5 font-semibold hover:bg-green-dark">Sign up</button>
+            </form>
+            <p class="mt-4 text-center text-grey">Already have an account? <a class="underline hover:text-black" th:href="@{/login}">Log in</a></p>
         </div>
-    </div>
+    </section>
 </div>
-
 </body>
 </html>

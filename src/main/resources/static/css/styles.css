@@ -1,0 +1,37 @@
+/* Shared accessibility and form states for the mockup's Review Buddy theme. */
+:root {
+    color-scheme: light;
+}
+
+:focus-visible {
+    outline: 3px solid #5a5c55;
+    outline-offset: 4px;
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 50;
+    transform: translateY(-200%);
+    border: 2px solid black;
+    border-radius: 0.5rem;
+    background: white;
+    padding: 0.5rem 1rem;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+input.field-error {
+    border-color: #b91c1c;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+#how-it-works {
+    scroll-margin-top: 6rem;
+}

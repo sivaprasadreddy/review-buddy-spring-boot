@@ -4,24 +4,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Server Error</title>
+    <title>Server error</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div class="mb-8">
-            <i class="fas fa-server text-red-500 text-6xl"></i>
+    <section class="grid min-h-[60vh] place-items-center px-5 py-14 text-center" aria-labelledby="error-title">
+        <div class="max-w-lg">
+            <h1 id="error-title" class="font-heading text-6xl font-bold">500</h1>
+            <h2 class="mt-3 font-heading text-2xl font-bold">Server error</h2>
+            <p class="mb-6 mt-2 text-grey">Something went wrong while processing your request. Please try again later.</p>
+            <a th:href="@{/}" class="inline-block rounded-full border-2 border-black bg-green px-5 py-2.5 font-semibold hover:bg-green-dark">Back to home</a>
         </div>
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">500 - Server Error</h1>
-        <p class="text-lg text-gray-600 mb-4">Some error occurred while processing your request.</p>
-        <p class="text-md text-gray-500 mb-8">Please try again later.</p>
-        <a th:href="@{/}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-            <i class="fas fa-home mr-2"></i>
-            Go to Homepage
-        </a>
-    </div>
+    </section>
 </div>
 </body>
 </html>
