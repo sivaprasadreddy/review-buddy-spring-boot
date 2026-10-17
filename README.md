@@ -42,3 +42,13 @@ Code Config file: `~/.codex/config.toml`
 args = ['@playwright/mcp@latest']
 command = 'npx'
 ```
+
+## Agent Skills
+
+* [SivaLabs Agent Skills](https://github.com/sivaprasadreddy/sivalabs-agent-skills)
+* [JetBrains Skills](https://github.com/JetBrains/skills)
+* [Kotlin Agent Skills](https://github.com/Kotlin/kotlin-agent-skills)
+* [Matt Pocock Skills](https://github.com/mattpocock/skills)
+* [Addy Osmani Agent Skills](https://github.com/addyosmani/agent-skills)
+* [Piotr Mińkowski Spring Boot Skills](https://github.com/piomin/claude-ai-spring-boot)
+* [Rrezart Prebreza Kotlin Skills](https://github.com/rrezartprebreza/kotlin-skills)
