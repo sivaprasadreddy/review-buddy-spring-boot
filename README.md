@@ -51,4 +51,4 @@ command = 'npx'
 * [Matt Pocock Skills](https://github.com/mattpocock/skills)
 * [Addy Osmani Agent Skills](https://github.com/addyosmani/agent-skills)
 * [Piotr Mińkowski Spring Boot Skills](https://github.com/piomin/claude-ai-spring-boot)
-* [Rrezart Prebreza Kotlin Skills](https://github.com/rrezartprebreza/kotlin-skills)
+* [Rrezart Prebreza Spring Boot Skills](https://github.com/rrezartprebreza/spring-boot-skills)
