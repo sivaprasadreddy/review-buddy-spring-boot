@@ -29,6 +29,7 @@
         </button>
         <nav id="mobile-menu" aria-label="Main navigation" class="hidden w-full flex-wrap items-center gap-1.5 md:flex md:w-auto">
             <a th:href="@{/}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Home</a>
+            <a th:href="@{/products}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Products</a>
             <th:block sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Log in</a>
                 <a th:href="@{/registration}" class="rounded-full border-2 border-black bg-black px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-neutral-700">Sign up</a>
@@ -81,6 +82,7 @@
         </div>
         <nav aria-label="Footer navigation" class="flex flex-wrap gap-4 text-green">
             <a th:href="@{/}" class="hover:underline">Home</a>
+            <a th:href="@{/products}" class="hover:underline">Products</a>
             <a sec:authorize="isAnonymous()" th:href="@{/login}" class="hover:underline">Log in</a>
             <a sec:authorize="isAnonymous()" th:href="@{/registration}" class="hover:underline">Sign up</a>
         </nav>

@@ -20,7 +20,8 @@ class WebSecurityConfig {
         "/actuator/info/**",
         "/error",
         "/login",
-        "/registration"
+        "/registration",
+        "/products"
     };
 
     @Bean

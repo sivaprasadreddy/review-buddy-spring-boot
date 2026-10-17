@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Products</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="border-b-2 border-black bg-green py-10">
+        <div class="mx-auto max-w-6xl px-5 text-center">
+            <h1 class="font-heading text-4xl font-bold tracking-tight">Discover products worth trying</h1>
+            <p class="mx-auto mt-3 max-w-2xl text-lg">Explore software built by makers like you. Read honest reviews, compare ratings, and find out what people liked and what could be better before you try something.</p>
+        </div>
+    </div>
+
+    <section class="py-14">
+        <div class="mx-auto max-w-6xl px-5">
+            <form th:action="@{/products}" method="get" role="search" class="mb-7 grid gap-3 md:grid-cols-[2fr_1fr_1fr]">
+                <input type="search" name="q" th:value="${criteria.query}" placeholder="Search by name or description..." aria-label="Search"
+                       class="w-full rounded-lg border-2 border-black bg-white px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-green"/>
+                <select name="category" aria-label="Category" onchange="this.form.requestSubmit()"
+                        class="w-full rounded-lg border-2 border-black bg-white px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-green">
+                    <option value="">All categories</option>
+                    <option th:each="c : ${categories}" th:value="${c.slug}" th:text="${c.name}" th:selected="${c.slug == criteria.categorySlug}">Category</option>
+                </select>
+                <select name="sort" aria-label="Sort" onchange="this.form.requestSubmit()"
+                        class="w-full rounded-lg border-2 border-black bg-white px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-green">
+                    <option value="rating" th:selected="${criteria.sort == 'rating'}">Top rated</option>
+                    <option value="reviews" th:selected="${criteria.sort == 'reviews'}">Most reviewed</option>
+                    <option value="new" th:selected="${criteria.sort == 'new'}">Newest</option>
+                </select>
+                <button type="submit" class="sr-only">Search</button>
+            </form>
+
+            <p class="mb-4 text-grey"
+               th:text="${productsPage.totalElements} + ' product' + (${productsPage.totalElements} == 1 ? '' : 's')">0 products</p>
+
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <article th:each="product : ${productsPage.data}"
+                         class="flex flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:-translate-y-1 hover:shadow-lg">
+                    <img class="aspect-[16/10] w-full bg-green object-cover"
+                         th:src="${product.imageUrl}" th:alt="${product.name} + ' preview'" loading="lazy"
+                         onerror="this.removeAttribute('src')"/>
+                    <div class="flex flex-1 flex-col gap-1.5 p-4">
+                        <span class="self-start rounded-full bg-green px-3 py-0.5 text-xs font-semibold" th:text="${product.category.name}">Category</span>
+                        <h2 class="font-heading text-lg font-bold" th:text="${product.name}">Product</h2>
+                        <p class="text-sm text-grey" th:text="${product.tagline}">Tagline</p>
+                        <div class="mt-auto flex items-center gap-1.5 pt-2 text-sm">
+                            <span class="tracking-widest" role="img"
+                                  th:attr="aria-label=${#numbers.formatDecimal(rating, 1, 1)} + ' out of 5'"><span aria-hidden="true">★★★★</span><span class="text-neutral-300" aria-hidden="true">★</span></span>
+                            <b th:text="${#numbers.formatDecimal(rating, 1, 1)}">4.0</b>
+                        </div>
+                    </div>
+                </article>
+
+                <div th:if="${productsPage.data.isEmpty()}" class="col-span-full rounded-2xl bg-green-soft p-12 text-center">
+                    <h2 class="font-heading text-lg font-bold">No products found</h2>
+                    <p>Try a different search or category.</p>
+                </div>
+            </div>
+
+            <nav th:if="${productsPage.totalPages > 1}" aria-label="Pagination"
+                 class="mt-10 flex items-center justify-center gap-2">
+                <a th:if="${productsPage.hasPreviousPage}"
+                   th:href="@{/products(q=${criteria.query},category=${criteria.categorySlug},sort=${criteria.sort},page=${productsPage.currentPageNo - 1})}"
+                   class="rounded-full border-2 border-black px-4 py-1.5 font-semibold hover:bg-green-soft">← Previous</a>
+                <th:block th:each="i : ${#numbers.sequence(1, productsPage.totalPages)}">
+                    <a th:href="@{/products(q=${criteria.query},category=${criteria.categorySlug},sort=${criteria.sort},page=${i})}" th:text="${i}"
+                       th:attr="aria-current=${i == productsPage.currentPageNo} ? 'page' : null"
+                       th:classappend="${i == productsPage.currentPageNo} ? 'bg-black text-white hover:bg-neutral-700' : 'hover:bg-green-soft'"
+                       class="grid h-10 w-10 place-items-center rounded-full border-2 border-black font-semibold">1</a>
+                </th:block>
+                <a th:if="${productsPage.hasNextPage}"
+                   th:href="@{/products(q=${criteria.query},category=${criteria.categorySlug},sort=${criteria.sort},page=${productsPage.currentPageNo + 1})}"
+                   class="rounded-full border-2 border-black px-4 py-1.5 font-semibold hover:bg-green-soft">Next →</a>
+            </nav>
+        </div>
+    </section>
+</div>
+</body>
+</html>
