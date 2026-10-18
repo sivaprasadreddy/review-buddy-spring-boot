@@ -10,7 +10,7 @@ services:
   
 
   review-buddy:
-    image: your_dockerhub_username/review-buddy
+    image: sivaprasadreddy/review-buddy
     container_name: review-buddy
     environment:
       SPRING_PROFILES_ACTIVE: docker

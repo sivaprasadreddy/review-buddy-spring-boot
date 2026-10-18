@@ -6,7 +6,7 @@ vars:
   SLEEP_CMD: '{{if eq .GOOS "windows"}}timeout{{else}}sleep{{end}}'
   DC_FILE: "compose.yml"
   REGISTRY: 'docker.io'
-  IMAGE_NAME: 'your_dockerhub_username/review-buddy'
+  IMAGE_NAME: 'sivaprasadreddy/review-buddy'
   DOCKER_IMAGE_NAME: '{{.REGISTRY}}/{{.IMAGE_NAME}}'
   VERSION:
     sh: '{{.MVNW}} help:evaluate -Dexpression=project.version -q -DforceStdout'
