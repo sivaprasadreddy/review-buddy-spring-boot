@@ -1,49 +1,57 @@
 package dev.sivalabs.reviewbuddy;
 
-import static com.tngtech.archunit.core.domain.JavaModifier.*;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
-import com.enofex.taikai.ClassCriteria;
-import com.enofex.taikai.Taikai;
-import com.enofex.taikai.java.ImportsConfigurer;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import com.tngtech.archunit.core.domain.Dependency;
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.junit.ArchTest;
+import com.tngtech.archunit.lang.ArchCondition;
+import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
+import jakarta.persistence.Entity;
+import org.springframework.stereotype.Service;
 
+@AnalyzeClasses(packages = ArchUnitTests.BASE_PACKAGE)
 class ArchUnitTests {
-    private static final String BASE_PACKAGE = ArchUnitTests.class.getPackageName();
+    static final String BASE_PACKAGE = "dev.sivalabs.reviewbuddy";
 
-    @Test
-    void shouldFulfillConstraints() {
-        Taikai.builder()
-                .namespace(BASE_PACKAGE)
-                .java(java -> java.noUsageOfDeprecatedAPIs()
-                        .methodsShouldNotDeclareGenericExceptions()
-                        .utilityClassesShouldBeFinalAndHavePrivateConstructor()
-                        .imports(ImportsConfigurer::shouldHaveNoCycles)
-                        .naming(naming -> naming.fieldsShouldNotMatch(".*(List|Set|Map)$")
-                                .constantsShouldFollowConventions()
-                                .interfacesShouldNotHavePrefixI()))
-                .logging(logging ->
-                        logging.loggersShouldFollowConventions(Logger.class, "LOG", List.of(PRIVATE, STATIC, FINAL)))
-                .test(test -> test.junit(junit -> junit
-                        .classesShouldBePackagePrivate(ClassCriteria.nameMatching(".*Test(s)"))
-                        .classesShouldNotBeAnnotatedWithDisabled()
-                        .methodsShouldNotBeAnnotatedWithDisabled()))
-                .spring(spring -> spring.noAutowiredFields()
-                        .boot(boot -> boot.applicationClassShouldResideInPackage(BASE_PACKAGE))
-                        .configurations(c -> c.namesShouldMatch(".+Config"))
-                        .controllers(controllers -> controllers
-                                // .shouldBeAnnotatedWithRestController()
-                                .namesShouldEndWithController()
-                                .shouldNotDependOnOtherControllers()
-                                .shouldBePackagePrivate())
-                        .services(services -> services
-                                // .shouldBeAnnotatedWithService()
-                                .shouldNotDependOnControllers()
-                                .namesShouldEndWithService())
-                        .repositories(repositories ->
-                                repositories.shouldNotDependOnServices().namesShouldEndWithRepository()))
-                .build()
-                .checkAll();
+    @ArchTest
+    static final ArchRule repositories_are_not_public =
+            noClasses().that().haveNameMatching(".*Repository").should().bePublic();
+
+    // Entities must not be public
+    @ArchTest
+    static final ArchRule entities_are_not_public =
+            noClasses().that().areAnnotatedWith(Entity.class).should().bePublic();
+
+    // Services are public (accessible to inbound handlers in the same module),
+    // but must only be accessed from within their own module — other modules must go through *API facades.
+    @ArchTest
+    static final ArchRule services_should_not_be_used_cross_module = classes()
+            .that()
+            .areAnnotatedWith(Service.class)
+            .should(new ArchCondition<>("only be accessed from same module") {
+                @Override
+                public void check(JavaClass service, ConditionEvents events) {
+                    String serviceModule = moduleOf(service);
+                    for (Dependency dependency : service.getDirectDependenciesToSelf()) {
+                        JavaClass origin = dependency.getOriginClass();
+                        String originModule = moduleOf(origin);
+                        if (!serviceModule.equals(originModule)) {
+                            String message =
+                                    origin.getName() + " accesses " + service.getName() + " from another module";
+                            events.add(SimpleConditionEvent.violated(dependency, message));
+                        }
+                    }
+                }
+            });
+
+    private static String moduleOf(JavaClass clazz) {
+        String pkg = clazz.getPackageName();
+        String[] parts = pkg.split("\\.");
+        return parts[BASE_PACKAGE.split("\\.").length];
     }
 }

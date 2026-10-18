@@ -1,8 +1,6 @@
 package dev.sivalabs.reviewbuddy.config;
 
-import dev.sivalabs.reviewbuddy.users.AuthUtils;
-import java.util.Optional;
-import org.jspecify.annotations.NonNull;
+import dev.sivalabs.reviewbuddy.users.UsersAPI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -10,18 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Configuration
 @EnableJpaAuditing
-public class PersistenceConfig {
+class PersistenceConfig {
 
     @Bean
-    public AuditorAware<Long> auditorProvider() {
-        return new SpringSecurityAuditorAware();
-    }
-
-    static class SpringSecurityAuditorAware implements AuditorAware<Long> {
-
-        @Override
-        public @NonNull Optional<Long> getCurrentAuditor() {
-            return Optional.ofNullable(AuthUtils.getCurrentUserId());
-        }
+    AuditorAware<Long> auditorProvider(UsersAPI usersAPI) {
+        return usersAPI::getCurrentUserId;
     }
 }
