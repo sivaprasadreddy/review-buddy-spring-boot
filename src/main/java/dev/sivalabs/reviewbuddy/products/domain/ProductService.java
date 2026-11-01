@@ -1,12 +1,16 @@
 package dev.sivalabs.reviewbuddy.products.domain;
 
 import dev.sivalabs.reviewbuddy.products.domain.models.CategoryDto;
+import dev.sivalabs.reviewbuddy.products.domain.models.CreateProductCmd;
 import dev.sivalabs.reviewbuddy.products.domain.models.FindProductsQuery;
 import dev.sivalabs.reviewbuddy.products.domain.models.ProductDto;
 import dev.sivalabs.reviewbuddy.shared.PagedResult;
+import dev.sivalabs.reviewbuddy.shared.ResourceNotFoundException;
+import dev.sivalabs.reviewbuddy.users.UsersAPI;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +20,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final UsersAPI usersAPI;
 
-    ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UsersAPI usersAPI) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.usersAPI = usersAPI;
     }
 
     @Transactional(readOnly = true)
@@ -35,6 +41,29 @@ public class ProductService {
         return categoryRepository.findAll(Sort.by("name")).stream()
                 .map(this::toCategoryDto)
                 .toList();
+    }
+
+    @Transactional
+    public Long createProduct(CreateProductCmd cmd) {
+        var maker = usersAPI.getCurrentUserName().orElseThrow(() -> new AccessDeniedException("Login required"));
+        var category = categoryRepository
+                .findBySlug(cmd.categorySlug())
+                .orElseThrow(() -> new IllegalArgumentException("Select an existing category"));
+        var product = new ProductEntity();
+        product.setName(cmd.name());
+        product.setTagline(cmd.tagline());
+        product.setDescription(cmd.description());
+        product.setCategory(category);
+        product.setMaker(maker);
+        product.setUrl(cmd.url());
+        product.setImageUrl(cmd.imageUrl().isBlank() ? null : cmd.imageUrl());
+        return productRepository.save(product).getId();
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDto findProductById(Long id) {
+        return toProductDto(
+                productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found")));
     }
 
     private Sort toSort(String sort) {

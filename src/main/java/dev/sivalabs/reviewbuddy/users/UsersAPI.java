@@ -18,6 +18,10 @@ public class UsersAPI {
         return userService.findById(id);
     }
 
+    public Optional<String> getCurrentUserName() {
+        return getCurrentUserId().flatMap(userService::findById).map(UserDto::name);
+    }
+
     public Optional<Long> getCurrentUserId() {
         return Optional.ofNullable(AuthUtils.getCurrentUserId());
     }

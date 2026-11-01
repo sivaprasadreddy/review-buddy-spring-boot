@@ -26,8 +26,14 @@ class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
-        http.authorizeHttpRequests(r ->
-                r.requestMatchers(PUBLIC_RESOURCES).permitAll().anyRequest().authenticated());
+        http.authorizeHttpRequests(r -> r.requestMatchers("/products/submit")
+                .authenticated()
+                .requestMatchers("/products/{id:[0-9]+}")
+                .permitAll()
+                .requestMatchers(PUBLIC_RESOURCES)
+                .permitAll()
+                .anyRequest()
+                .authenticated());
 
         http.formLogin(formLogin -> formLogin.loginPage("/login").permitAll());
 

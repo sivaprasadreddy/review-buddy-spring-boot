@@ -45,7 +45,7 @@
                          onerror="this.removeAttribute('src')"/>
                     <div class="flex flex-1 flex-col gap-1.5 p-4">
                         <span class="self-start rounded-full bg-green px-3 py-0.5 text-xs font-semibold" th:text="${product.category.name}">Category</span>
-                        <h2 class="font-heading text-lg font-bold" th:text="${product.name}">Product</h2>
+                        <h2 class="font-heading text-lg font-bold"><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}" class="hover:underline">Product</a></h2>
                         <p class="text-sm text-grey" th:text="${product.tagline}">Tagline</p>
                         <div class="mt-auto flex items-center gap-1.5 pt-2 text-sm">
                             <span class="tracking-widest" role="img"

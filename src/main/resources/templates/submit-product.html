@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title>Submit a product</title></head><body><div layout:fragment="content"><section class="mx-auto max-w-3xl px-5 py-14">
+<h1 class="font-heading text-4xl font-bold">Submit a product</h1>
+<form method="post" th:action="@{/products/submit}" th:object="${product}" class="mt-6 rounded-3xl border-2 border-black p-8">
+<label for="name" class="mb-1.5 mt-4 block font-semibold">Product name</label>
+<input type="text" id="name" th:field="*{name}" class="w-full rounded-lg border-2 border-black px-3.5 py-2.5" th:errorclass="field-error" aria-describedby="name-error" required maxlength="60"/>
+<p id="name-error" class="text-red-700" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+<label for="tagline" class="mb-1.5 mt-4 block font-semibold">Tagline</label>
+<input type="text" id="tagline" th:field="*{tagline}" class="w-full rounded-lg border-2 border-black px-3.5 py-2.5" th:errorclass="field-error" aria-describedby="tagline-error" required maxlength="100"/>
+<p id="tagline-error" class="text-red-700" th:if="${#fields.hasErrors('tagline')}" th:errors="*{tagline}"></p>
+<label for="url" class="mb-1.5 mt-4 block font-semibold">Website URL</label>
+<input type="url" id="url" th:field="*{url}" class="w-full rounded-lg border-2 border-black px-3.5 py-2.5" th:errorclass="field-error" aria-describedby="url-error" required/>
+<p id="url-error" class="text-red-700" th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></p>
+<label for="categorySlug" class="mb-1.5 mt-4 block font-semibold">Category</label>
+<select id="categorySlug" th:field="*{categorySlug}" class="w-full rounded-lg border-2 border-black px-3.5 py-2.5" th:errorclass="field-error" aria-describedby="categorySlug-error" required><option value="">Select a category</option><option th:each="category : ${categories}" th:value="${category.slug}" th:text="${category.name}"></option></select>
+<p id="categorySlug-error" class="text-red-700" th:if="${#fields.hasErrors('categorySlug')}" th:errors="*{categorySlug}"></p>
+<label for="description" class="mb-1.5 mt-4 block font-semibold">Description</label>
+<textarea id="description" th:field="*{description}" class="w-full rounded-lg border-2 border-black px-3.5 py-2.5" th:errorclass="field-error" aria-describedby="description-error" required maxlength="500" rows="5"></textarea>
+<p id="description-error" class="text-red-700" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+<label for="imageUrl" class="mb-1.5 mt-4 block font-semibold">Image URL (optional)</label>
+<input type="url" id="imageUrl" th:field="*{imageUrl}" class="w-full rounded-lg border-2 border-black px-3.5 py-2.5" th:errorclass="field-error" aria-describedby="imageUrl-error"/>
+<p id="imageUrl-error" class="text-red-700" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></p>
+<button class="mt-6 rounded-full bg-black px-5 py-2.5 font-semibold text-white">Submit product</button></form></section></div></body></html>

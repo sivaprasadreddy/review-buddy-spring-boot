@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title>Product</title></head><body><div layout:fragment="content"><section class="mx-auto max-w-3xl px-5 py-14">
+<p th:text="${product.category.name}" class="font-semibold"></p>
+<h1 th:text="${product.name}" class="font-heading text-4xl font-bold"></h1>
+<p th:text="${product.tagline}" class="mt-3 text-lg"></p>
+<img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name + ' preview'}" class="my-6 w-full rounded-3xl"/>
+<p th:text="${product.description}" class="my-6 whitespace-pre-wrap"></p>
+<p>By <span th:text="${product.maker}"></span></p>
+<a th:href="${product.url}" target="_blank" rel="noopener noreferrer" class="mt-6 inline-block rounded-full border-2 border-black bg-green px-5 py-2.5">Visit product</a>
+<a th:href="@{/products}" class="ml-4 underline">Browse products</a>
+</section></div></body></html>

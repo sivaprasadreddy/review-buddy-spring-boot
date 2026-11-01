@@ -30,6 +30,7 @@
         <nav id="mobile-menu" aria-label="Main navigation" class="hidden w-full flex-wrap items-center gap-1.5 md:flex md:w-auto">
             <a th:href="@{/}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Home</a>
             <a th:href="@{/products}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Products</a>
+            <a th:href="@{/products/submit}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Submit a product</a>
             <th:block sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="rounded-full px-3 py-2 font-medium hover:bg-green-soft">Log in</a>
                 <a th:href="@{/registration}" class="rounded-full border-2 border-black bg-black px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-neutral-700">Sign up</a>
