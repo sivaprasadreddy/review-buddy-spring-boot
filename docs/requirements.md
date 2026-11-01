@@ -10,7 +10,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 | --- | --- | --- |
 | UC-001 | Submit a Product for Public Feedback | COMPLETED |
 | UC-002 | Browse Public Products | COMPLETED |
-| UC-003 | View a Product for Review | NOT_IMPLEMENTED |
+| UC-003 | View a Product for Review | COMPLETED |
 | UC-004 | Leave a Structured Product Review | NOT_IMPLEMENTED |
 | UC-005 | Read a Product's Reviews | NOT_IMPLEMENTED |
 | UC-006 | Generate a Product's AI Review Summary | NOT_IMPLEMENTED |
@@ -48,7 +48,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 
 ### UC-003 — View a Product for Review
 
-- **Status:** NOT_IMPLEMENTED
+- **Status:** COMPLETED
 - **Depends On:** UC-001
 - **Description:** A visitor, maker, or reviewer opens a particular public product to identify the product and access its feedback. The product mockup groups product information, individual reviews, and an AI summary into one detail experience.
 - **Acceptance Criteria:**

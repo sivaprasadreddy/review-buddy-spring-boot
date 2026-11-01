@@ -7,9 +7,28 @@ import dev.sivalabs.reviewbuddy.products.domain.ProductService;
 import dev.sivalabs.reviewbuddy.products.domain.models.ProductDto;
 import dev.sivalabs.reviewbuddy.shared.PagedResult;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 
 class ProductControllerTests extends BaseIT {
+
+    @ParameterizedTest
+    @CsvSource({"1,TaskNest,APIPilot", "8,APIPilot,TaskNest"})
+    void shouldIdentifyRequestedPublicProduct(Long id, String name, String otherProduct)
+            throws java.io.UnsupportedEncodingException {
+        var result = mvc.get().uri("/products/" + id).exchange();
+
+        assertThat(result).hasStatusOk().hasViewName("product");
+        var html = result.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(result).model().extractingByKey("product").isInstanceOfSatisfying(ProductDto.class, product -> {
+            assertThat(product.id()).isEqualTo(id);
+            assertThat(product.name()).isEqualTo(name);
+            assertThat(html)
+                    .contains(product.name(), product.tagline(), product.description(), product.url())
+                    .doesNotContain(otherProduct);
+        });
+    }
 
     @Test
     void shouldBrowseAndOpenListedProductWithoutAuthentication() throws java.io.UnsupportedEncodingException {

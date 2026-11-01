@@ -82,6 +82,31 @@ class ProductSubmissionTests extends BaseIT {
                 .contains("New Product", "href=\"" + first.getResponse().getRedirectedUrl() + "\"");
     }
 
+    @Test
+    void shouldLetMakerAndVisitorViewNewProductBeforeAnyReviewsExist() throws java.io.UnsupportedEncodingException {
+        var submitted = submission().exchange();
+        assertThat(submitted).hasStatus3xxRedirection();
+        var publicUrl = submitted.getResponse().getRedirectedUrl();
+
+        var makerView = mvc.get()
+                .uri(publicUrl)
+                .with(user(userDetailsService.loadUserByUsername("demouser@gmail.com")))
+                .exchange();
+        var visitorView = mvc.get().uri(publicUrl).exchange();
+
+        assertThat(makerView).hasStatusOk().hasViewName("product");
+        assertThat(visitorView).hasStatusOk().hasViewName("product");
+        for (var view : java.util.List.of(makerView, visitorView)) {
+            assertThat(view.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8))
+                    .contains(
+                            "New Product",
+                            "Useful software",
+                            "A helpful tool for makers",
+                            "Demo User",
+                            "https://example.com/new-product");
+        }
+    }
+
     @ParameterizedTest
     @CsvSource({"name,61", "tagline,101", "description,501"})
     void shouldRejectOverlongFields(String field, int length) {
