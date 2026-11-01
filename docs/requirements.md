@@ -12,7 +12,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 | UC-002 | Browse Public Products | COMPLETED |
 | UC-003 | View a Product for Review | COMPLETED |
 | UC-004 | Leave a Structured Product Review | COMPLETED |
-| UC-005 | Read a Product's Reviews | NOT_IMPLEMENTED |
+| UC-005 | Read a Product's Reviews | COMPLETED |
 | UC-006 | Generate a Product's AI Review Summary | NOT_IMPLEMENTED |
 | UC-007 | Read a Product's AI Review Summary | NOT_IMPLEMENTED |
 
@@ -77,15 +77,17 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 
 ### UC-005 — Read a Product's Reviews
 
-- **Status:** NOT_IMPLEMENTED
+- **Status:** COMPLETED
 - **Depends On:** UC-004
-- **Description:** Any visitor reads the individual reviews of a public product, allowing makers to inspect actionable feedback and reviewers or early adopters to understand other people's experiences. The product mockup illustrates separate “Liked” and “Can be improved” sections for each review.
+- **Description:** Any visitor reads the individual reviews of a public product, allowing makers to inspect actionable feedback and reviewers or early adopters to understand other people's experiences. The product mockup illustrates separate “Liked” and “Can be improved” sections for each review. Confirmed for UC-005: display only feedback fields, with no reviewer identity or submission date; order reviews newest first, breaking timestamp ties by descending review ID.
 - **Acceptance Criteria:**
   - A visitor can read a public product's submitted reviews without authentication.
   - Each review presents its own liked feedback separately from its improvement feedback.
   - Individual reviews remain available rather than being replaced by an aggregate summary.
   - The reviews shown for a product belong to that product.
   - A maker can read the reviews of their own submitted product through the public experience.
+  - Each review displays only its feedback fields, without reviewer identity or submission date.
+  - Reviews appear newest first, with descending review ID breaking equal-timestamp ties.
 
 ### UC-006 — Generate a Product's AI Review Summary
 
@@ -126,7 +128,7 @@ The user confirmed login-required submission, the mockup submission fields and l
 | Discovery ordering | [products.html](../mockup/products.html) defaults to top rated and also offers most reviewed and newest. It shows a matching-product count and a no-results message. [index.html](../mockup/index.html) highlights three reviewed products by average rating, breaking equal averages by review count, and links to category results. | Confirm ratings, home-page rankings, ordering, tie behavior, and empty discovery states. Public browsing in the PRD does not prescribe a ranking. |
 | Review validation and posting | [review.html](../mockup/review.html) requires both feedback fields, each with a 400-character maximum, and returns to the product after posting. | Confirmed for UC-004: both fields are nonblank with a 400-character maximum; invalid input is retained with field errors and no review created; success returns to the product page. |
 | Ratings | [review.html](../mockup/review.html) offers integer ratings from 0 through 5 with 5 initially selected. [app.js](../mockup/app.js) calculates an arithmetic average; [product.html](../mockup/product.html) shows it to one decimal place, a review count, and counts for each rating. | Numeric ratings and aggregate statistics are absent from the PRD. Confirm their inclusion, default selection, rounding, and behavior for unrated products before making them requirements. |
-| Review presentation | [product.html](../mockup/product.html) and [app.js](../mockup/app.js) show author, date, rating, and both feedback areas; product reviews appear in descending date order. | Confirm public reviewer identity, dates, ordering, and equal-date behavior. |
+| Review presentation | [product.html](../mockup/product.html) and [app.js](../mockup/app.js) show author, date, rating, and both feedback areas; product reviews appear in descending date order. | Confirmed for UC-005: show only the two feedback fields, without reviewer identity or dates; newest first with descending review ID breaking timestamp ties. |
 | Products without reviews | [product.html](../mockup/product.html) displays a dash instead of an average, a zero review count, and a “No reviews yet” invitation. | The PRD explicitly leaves the no-review presentation open; confirm this proposed state. |
 | Summary eligibility | [product.html](../mockup/product.html), [about.html](../mockup/about.html), and [app.js](../mockup/app.js) propose an unavailable-summary message until at least two reviews exist, with separate liked and improvement lists when a summary is available. | The PRD explicitly leaves low-review-count handling open. Confirm the threshold, generation trigger, refresh after new reviews, pending state, and failure or retry behavior. The prototype also lacks some summaries despite having two reviews, so availability cannot be inferred from the threshold alone. |
 | Personal activity and logout | [profile.html](../mockup/profile.html) proposes a protected profile showing name, email, submission and review counts, “My products,” “My reviews,” links to the relevant products, empty-state actions, and logout returning home. | Profiles and logout are not specified in the PRD. Confirm account and personal-activity scope and ownership rules. Matching display names in demo data is not an approved identity rule. |

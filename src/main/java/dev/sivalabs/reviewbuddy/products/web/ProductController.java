@@ -1,6 +1,7 @@
 package dev.sivalabs.reviewbuddy.products.web;
 
 import dev.sivalabs.reviewbuddy.products.domain.ProductService;
+import dev.sivalabs.reviewbuddy.products.domain.ReviewService;
 import dev.sivalabs.reviewbuddy.products.domain.models.CreateProductCmd;
 import dev.sivalabs.reviewbuddy.products.domain.models.FindProductsQuery;
 import jakarta.validation.Valid;
@@ -17,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 class ProductController {
     private final ProductService productService;
 
-    ProductController(ProductService productService) {
+    private final ReviewService reviewService;
+
+    ProductController(ProductService productService, ReviewService reviewService) {
         this.productService = productService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/products/submit")
@@ -52,6 +56,7 @@ class ProductController {
     @GetMapping("/products/{id:[0-9]+}")
     String productDetails(@PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findProductById(id));
+        model.addAttribute("reviews", reviewService.findReviewsByProductId(id));
         return "product";
     }
 

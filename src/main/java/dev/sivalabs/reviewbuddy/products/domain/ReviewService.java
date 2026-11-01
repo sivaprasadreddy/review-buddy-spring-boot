@@ -1,7 +1,9 @@
 package dev.sivalabs.reviewbuddy.products.domain;
 
+import dev.sivalabs.reviewbuddy.products.domain.models.ReviewDto;
 import dev.sivalabs.reviewbuddy.shared.ResourceNotFoundException;
 import dev.sivalabs.reviewbuddy.users.UsersAPI;
+import java.util.List;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,11 @@ public class ReviewService {
         this.products = products;
         this.reviews = reviews;
         this.users = users;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewDto> findReviewsByProductId(Long productId) {
+        return reviews.findReviewsByProductId(productId);
     }
 
     @Transactional(readOnly = true)
