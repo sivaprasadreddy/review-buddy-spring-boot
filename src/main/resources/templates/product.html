@@ -8,5 +8,6 @@
 <p th:text="${product.description}" class="my-6 whitespace-pre-wrap"></p>
 <p>By <span th:text="${product.maker}"></span></p>
 <a th:href="${product.url}" target="_blank" rel="noopener noreferrer" class="mt-6 inline-block rounded-full border-2 border-black bg-green px-5 py-2.5">Visit product</a>
+<a th:href="@{/products/{id}/reviews/new(id=${product.id})}" class="ml-4 underline">Write a review</a>
 <a th:href="@{/products}" class="ml-4 underline">Browse products</a>
 </section></div></body></html>

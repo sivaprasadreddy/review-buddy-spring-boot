@@ -11,7 +11,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 | UC-001 | Submit a Product for Public Feedback | COMPLETED |
 | UC-002 | Browse Public Products | COMPLETED |
 | UC-003 | View a Product for Review | COMPLETED |
-| UC-004 | Leave a Structured Product Review | NOT_IMPLEMENTED |
+| UC-004 | Leave a Structured Product Review | COMPLETED |
 | UC-005 | Read a Product's Reviews | NOT_IMPLEMENTED |
 | UC-006 | Generate a Product's AI Review Summary | NOT_IMPLEMENTED |
 | UC-007 | Read a Product's AI Review Summary | NOT_IMPLEMENTED |
@@ -59,9 +59,9 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 
 ### UC-004 — Leave a Structured Product Review
 
-- **Status:** NOT_IMPLEMENTED
+- **Status:** COMPLETED
 - **Depends On:** UC-003
-- **Description:** A reviewer, including a maker reviewing someone else's product, submits feedback in the two areas defined by the PRD: what they liked and what could be improved. The review mockup illustrates the two separate text inputs and a return to the product after posting. Authentication, self-review eligibility, and detailed validation rules remain unresolved.
+- **Description:** A reviewer, including a maker reviewing someone else's product, submits feedback in the two areas defined by the PRD: what they liked and what could be improved. The review mockup illustrates the two separate text inputs and a return to the product after posting. Confirmed for UC-004: login is required; self-reviews and repeat reviews are prohibited using account identity. Both feedback fields must be nonblank and at most 400 characters. Validation errors retain input; success returns to the product page. Numeric ratings are excluded. Existing demo products are linked to dedicated maker accounts.
 - **Acceptance Criteria:**
   - A reviewer can leave feedback for a submitted product.
   - The review captures what the reviewer liked as a distinct feedback area.
@@ -70,6 +70,10 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
   - The submitted review is associated with the product being reviewed.
   - A maker who submits products can also review another maker's product.
   - Reviews from multiple reviewers can be associated with the same product.
+  - Only signed-in users can open the review form or submit; reviewer identity comes from the signed-in account.
+  - A maker cannot review their own product, and an account can review a product at most once, including concurrent submissions.
+  - Both feedback fields must be nonblank and at most 400 characters; invalid input is retained with field errors without storing a review.
+  - Successful submission returns to the reviewed product's public page; numeric ratings are not collected.
 
 ### UC-005 — Read a Product's Reviews
 
@@ -115,12 +119,12 @@ The user confirmed login-required submission, the mockup submission fields and l
 | Area | Mockup evidence and proposed detail | Decision still needed |
 | --- | --- | --- |
 | Product submission | [submit.html](../mockup/submit.html) requires product name (maximum 60 characters), tagline (100), website URL, category, and description (500). It accepts an optional image URL, assigns the maker and submission date, and opens the submitted product. | Confirmed for UC-001: these fields and limits, optional image URL, selection from existing categories, and navigation to the public product page. Website and supplied image URLs use HTTP or HTTPS. |
-| Accounts | [signup.html](../mockup/signup.html) collects a required name (maximum 40 characters), email, and password (minimum eight characters), then returns to the home page. [login.html](../mockup/login.html) collects email and password. | Submission requires login for UC-001. Review authentication and any changes to the existing account flows remain unconfirmed. |
-| Authorization and return navigation | [app.js](../mockup/app.js) redirects signed-out users attempting submission, review, or profile access to login, preserves the requested destination, and restores it after login. Public browsing remains open. | Submission form and posting require login for UC-001. Review and profile protection and changes to account return navigation remain unconfirmed. |
+| Accounts | [signup.html](../mockup/signup.html) collects a required name (maximum 40 characters), email, and password (minimum eight characters), then returns to the home page. [login.html](../mockup/login.html) collects email and password. | Submission requires login for UC-001. Review form access and submission require login for UC-004. Other account-flow changes remain unconfirmed. |
+| Authorization and return navigation | [app.js](../mockup/app.js) redirects signed-out users attempting submission, review, or profile access to login, preserves the requested destination, and restores it after login. Public browsing remains open. | Submission form and posting require login for UC-001. Review form access and posting require login for UC-004. Profile protection and changes to account return navigation remain unconfirmed. |
 | Product cards and details | [app.js](../mockup/app.js) and [product.html](../mockup/product.html) show name, tagline, category, preview image, rating, and review count; details add description, maker, date, and an external website link. | Confirm required public metadata and whether author identity and dates are public. The PRD does not define these fields or additional privacy rules. |
 | Search and categories | [products.html](../mockup/products.html) supports trimmed, case-insensitive substring search across name, tagline, and description, combined with an exact category filter and an “All categories” option. [data.js](../mockup/data.js) lists Developer Tools, Productivity, Finance, Education, Design, and Lifestyle. | Confirm whether search and categories belong in MVP scope and whether the category list is fixed. |
 | Discovery ordering | [products.html](../mockup/products.html) defaults to top rated and also offers most reviewed and newest. It shows a matching-product count and a no-results message. [index.html](../mockup/index.html) highlights three reviewed products by average rating, breaking equal averages by review count, and links to category results. | Confirm ratings, home-page rankings, ordering, tie behavior, and empty discovery states. Public browsing in the PRD does not prescribe a ranking. |
-| Review validation and posting | [review.html](../mockup/review.html) requires both feedback fields, each with a 400-character maximum, and returns to the product after posting. | Confirm requiredness, whitespace-only input behavior, length limits, submission failures, and post-submit navigation. The PRD requires two structured areas but does not specify these validation rules. |
+| Review validation and posting | [review.html](../mockup/review.html) requires both feedback fields, each with a 400-character maximum, and returns to the product after posting. | Confirmed for UC-004: both fields are nonblank with a 400-character maximum; invalid input is retained with field errors and no review created; success returns to the product page. |
 | Ratings | [review.html](../mockup/review.html) offers integer ratings from 0 through 5 with 5 initially selected. [app.js](../mockup/app.js) calculates an arithmetic average; [product.html](../mockup/product.html) shows it to one decimal place, a review count, and counts for each rating. | Numeric ratings and aggregate statistics are absent from the PRD. Confirm their inclusion, default selection, rounding, and behavior for unrated products before making them requirements. |
 | Review presentation | [product.html](../mockup/product.html) and [app.js](../mockup/app.js) show author, date, rating, and both feedback areas; product reviews appear in descending date order. | Confirm public reviewer identity, dates, ordering, and equal-date behavior. |
 | Products without reviews | [product.html](../mockup/product.html) displays a dash instead of an average, a zero review count, and a “No reviews yet” invitation. | The PRD explicitly leaves the no-review presentation open; confirm this proposed state. |
@@ -130,8 +134,8 @@ The user confirmed login-required submission, the mockup submission fields and l
 
 ## Remaining PRD Questions and Specification Limits
 
-- **Reviewer eligibility:** Whether makers can review their own products is unresolved. The absence of a self-review check in the mockup does not establish permission.
-- **Repeat reviews:** Neither the PRD nor the intended product rules define whether one person can review a product more than once. Repeated prototype submissions do not establish a policy.
+- **Reviewer eligibility:** Confirmed for UC-004: self-reviews are prohibited using linked maker account identity.
+- **Repeat reviews:** Confirmed for UC-004: at most one review per account per product.
 - **Review lifecycle:** Editing, deleting, and maker responses to reviews remain open questions. No update, deletion, or response use cases are committed here.
 - **Abuse prevention:** MVP spam and abusive-review controls are undecided. Advanced moderation remains excluded.
 - **Summary fidelity:** Accurate representation is a stated risk, but the PRD supplies no measurable quality threshold or evaluation method. Summary refresh timing and failure behavior also need decisions before they can receive precise acceptance criteria.

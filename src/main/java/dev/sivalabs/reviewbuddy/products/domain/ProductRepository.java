@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select p from ProductEntity p where p.id = :id")
+    java.util.Optional<ProductEntity> findForReview(Long id);
+
     @Query(value = """
             select p from ProductEntity p join fetch p.category c
             where (:categorySlug = '' or c.slug = :categorySlug)

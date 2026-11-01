@@ -30,6 +30,17 @@ class ProductEntity extends BaseEntity {
     @Column(nullable = false)
     private String maker;
 
+    @Column(name = "maker_id", nullable = false)
+    private Long makerId;
+
+    public Long getMakerId() {
+        return makerId;
+    }
+
+    public void setMakerId(Long makerId) {
+        this.makerId = makerId;
+    }
+
     @Column(nullable = false)
     private String url;
 

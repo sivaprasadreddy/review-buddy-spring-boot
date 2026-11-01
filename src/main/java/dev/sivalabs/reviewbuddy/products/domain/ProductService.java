@@ -56,6 +56,7 @@ public class ProductService {
         product.setDescription(cmd.description());
         product.setCategory(category);
         product.setMaker(maker);
+        product.setMakerId(usersAPI.getCurrentUserId().orElseThrow(() -> new AccessDeniedException("Login required")));
         product.setUrl(cmd.url());
         product.setImageUrl(cmd.imageUrl().isBlank() ? null : cmd.imageUrl());
         return productRepository.save(product).getId();

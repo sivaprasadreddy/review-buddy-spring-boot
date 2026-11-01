@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title>Write a review</title></head>
+<body><div layout:fragment="content"><section class="mx-auto max-w-xl px-5 py-14">
+    <h1 class="font-heading text-3xl font-bold" th:text="'Review ' + ${product.name}">Write a review</h1>
+    <form th:action="@{/products/{id}/reviews(id=${product.id})}" th:object="${review}" method="post" class="mt-6 grid gap-4">
+        <label for="liked" class="font-semibold">What did you like?</label>
+        <textarea id="liked" th:field="*{liked}" required maxlength="400" class="min-h-28 rounded-lg border-2 border-black p-3" aria-describedby="liked-errors"></textarea>
+        <p id="liked-errors" th:errors="*{liked}" class="text-red-700"></p>
+        <label for="improvements" class="font-semibold">What could be improved?</label>
+        <textarea id="improvements" th:field="*{improvements}" required maxlength="400" class="min-h-28 rounded-lg border-2 border-black p-3" aria-describedby="improvements-errors"></textarea>
+        <p id="improvements-errors" th:errors="*{improvements}" class="text-red-700"></p>
+        <button type="submit" class="rounded-full bg-black px-5 py-3 font-semibold text-white">Post review</button>
+        <a th:href="@{/products/{id}(id=${product.id})}" class="underline">Back to product</a>
+    </form>
+</section></div></body></html>
