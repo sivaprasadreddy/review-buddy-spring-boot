@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 class ProductController {
-    static final double STATIC_RATING = 4.0;
-
     private final ProductService productService;
 
     ProductController(ProductService productService) {
@@ -61,14 +59,12 @@ class ProductController {
     String listProducts(
             @RequestParam(name = "q", required = false) String query,
             @RequestParam(name = "category", required = false) String categorySlug,
-            @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "page", defaultValue = "1") int page,
             Model model) {
-        var criteria = new FindProductsQuery(query, categorySlug, sort, page);
+        var criteria = new FindProductsQuery(query, categorySlug, page);
         model.addAttribute("criteria", criteria);
         model.addAttribute("categories", productService.findAllCategories());
         model.addAttribute("productsPage", productService.findProducts(criteria));
-        model.addAttribute("rating", STATIC_RATING);
         return "products";
     }
 }

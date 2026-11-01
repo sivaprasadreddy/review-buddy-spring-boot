@@ -12,6 +12,22 @@ import org.springframework.http.HttpStatus;
 class ProductControllerTests extends BaseIT {
 
     @Test
+    void shouldBrowseAndOpenListedProductWithoutAuthentication() throws java.io.UnsupportedEncodingException {
+        var listing = mvc.get().uri("/products").exchange();
+        assertThat(listing).hasStatusOk();
+        var html = listing.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(html)
+                .contains("href=\"/products/8\"", "APIPilot", "Design, mock and test REST APIs in one place")
+                .doesNotContain("out of 5", "Top rated", "Most reviewed", "name=\"sort\"");
+        assertThat(html.indexOf("APIPilot")).isLessThan(html.indexOf("PixelPress"));
+
+        var details = mvc.get().uri("/products/8").exchange();
+        assertThat(details).hasStatusOk().hasViewName("product");
+        assertThat(details.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8))
+                .contains("APIPilot", "Draft an OpenAPI spec", "https://example.com/apipilot");
+    }
+
+    @Test
     void shouldShowFirstPageOfProducts() {
         var result = mvc.get().uri("/products").exchange();
 

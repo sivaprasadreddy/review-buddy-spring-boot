@@ -9,7 +9,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 | UseCase ID | Use Case Title | Status |
 | --- | --- | --- |
 | UC-001 | Submit a Product for Public Feedback | COMPLETED |
-| UC-002 | Browse Public Products | NOT_IMPLEMENTED |
+| UC-002 | Browse Public Products | COMPLETED |
 | UC-003 | View a Product for Review | NOT_IMPLEMENTED |
 | UC-004 | Leave a Structured Product Review | NOT_IMPLEMENTED |
 | UC-005 | Read a Product's Reviews | NOT_IMPLEMENTED |
@@ -37,9 +37,9 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 
 ### UC-002 — Browse Public Products
 
-- **Status:** NOT_IMPLEMENTED
+- **Status:** COMPLETED
 - **Depends On:** UC-001
-- **Description:** Any visitor browses the products submitted for public feedback and selects a product to learn more. The home and products mockups illustrate entry points to this public discovery flow.
+- **Description:** Any visitor browses the products submitted for public feedback and selects a product to learn more. The home and products mockups illustrate entry points to this public discovery flow. Confirmed for UC-002: listing links open the existing public product page; review display remains in UC-004/UC-005. Browse newest first without fabricated ratings or unsupported sorting choices, preserving existing search, category filtering, and pagination.
 - **Acceptance Criteria:**
   - A visitor can browse publicly available products without being a product maker or reviewer.
   - Public browsing is accessible without authentication.

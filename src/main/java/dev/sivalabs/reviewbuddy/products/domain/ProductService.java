@@ -30,7 +30,8 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public PagedResult<ProductDto> findProducts(FindProductsQuery criteria) {
-        var pageable = PageRequest.of(criteria.pageNo() - 1, PAGE_SIZE, toSort(criteria.sort()));
+        var pageable = PageRequest.of(
+                criteria.pageNo() - 1, PAGE_SIZE, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id")));
         var query = criteria.query().isEmpty() ? "" : "%" + criteria.query().toLowerCase() + "%";
         var page = productRepository.search(query, criteria.categorySlug(), pageable);
         return PagedResult.from(page.map(this::toProductDto));
@@ -64,11 +65,6 @@ public class ProductService {
     public ProductDto findProductById(Long id) {
         return toProductDto(
                 productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found")));
-    }
-
-    private Sort toSort(String sort) {
-        // Ratings and reviews are not stored yet, so every sort option currently falls back to newest first.
-        return Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
     }
 
     private ProductDto toProductDto(ProductEntity product) {

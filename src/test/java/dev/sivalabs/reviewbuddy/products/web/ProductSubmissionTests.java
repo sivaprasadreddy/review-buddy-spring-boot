@@ -79,7 +79,7 @@ class ProductSubmissionTests extends BaseIT {
                 .doesNotContain("Forged maker");
         var listing = mvc.get().uri("/products").param("q", "New Product").exchange();
         assertThat(listing.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8))
-                .contains("New Product");
+                .contains("New Product", "href=\"" + first.getResponse().getRedirectedUrl() + "\"");
     }
 
     @ParameterizedTest
