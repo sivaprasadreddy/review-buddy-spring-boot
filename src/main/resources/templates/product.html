@@ -10,6 +10,17 @@
 <a th:href="${product.url}" target="_blank" rel="noopener noreferrer" class="mt-6 inline-block rounded-full border-2 border-black bg-green px-5 py-2.5">Visit product</a>
 <a th:href="@{/products/{id}/reviews/new(id=${product.id})}" class="ml-4 underline">Write a review</a>
 <a th:href="@{/products}" class="ml-4 underline">Browse products</a>
+<section aria-labelledby="summary-heading" class="mt-10 rounded-2xl border border-line p-5">
+    <h2 id="summary-heading" class="font-heading text-2xl font-bold">AI-generated review summary</h2>
+    <p th:if="${reviewSummary == null}" class="mt-4 text-grey">AI summary not available yet</p>
+    <div th:if="${reviewSummary != null}" class="mt-4">
+        <h3 class="font-semibold">Liked</h3>
+        <p th:text="${reviewSummary.liked}" class="mt-2 whitespace-pre-wrap"></p>
+        <h3 class="mt-5 font-semibold">Can be improved</h3>
+        <p th:text="${reviewSummary.improvements}" class="mt-2 whitespace-pre-wrap"></p>
+    </div>
+    <a href="#reviews-heading" class="mt-4 inline-block underline">Read individual reviews</a>
+</section>
 <section aria-labelledby="reviews-heading" class="mt-10">
     <h2 id="reviews-heading" class="font-heading text-2xl font-bold">Reviews</h2>
     <p th:if="${reviews.isEmpty()}" class="mt-4 text-grey">No reviews yet.</p>

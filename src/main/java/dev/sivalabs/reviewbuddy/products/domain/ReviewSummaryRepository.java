@@ -1,6 +1,7 @@
 package dev.sivalabs.reviewbuddy.products.domain;
 
 import dev.sivalabs.reviewbuddy.products.domain.models.ReviewSummaryDto;
+import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,13 @@ class ReviewSummaryRepository {
 
     ReviewSummaryRepository(JdbcClient jdbc) {
         this.jdbc = jdbc;
+    }
+
+    public Optional<ReviewSummaryDto> findByProductId(Long productId) {
+        return jdbc.sql("select liked, improvements from review_summaries where product_id = :productId")
+                .param("productId", productId)
+                .query((rs, rowNum) -> new ReviewSummaryDto(rs.getString("liked"), rs.getString("improvements")))
+                .optional();
     }
 
     @Transactional

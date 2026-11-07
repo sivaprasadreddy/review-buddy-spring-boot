@@ -1,8 +1,8 @@
 # Review Buddy Requirements
 
-This specification derives the MVP use cases from [PRD.md](PRD.md), with the [mockups](../mockup/index.html) informing the flow descriptions and proposed details below. The PRD and explicitly confirmed UC-001 decisions below define the scope. Payments, featured listings, advanced moderation, and a mobile app are excluded. Mockup features absent from the PRD are recorded as proposals rather than mandatory acceptance criteria.
+This specification derives the MVP use cases from [PRD.md](PRD.md).
 
-All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning status, not an assessment of repository code. The allowed statuses are `NOT_IMPLEMENTED`, `IN_PROGRESS`, and `COMPLETED`.
+All newly derived use cases start as `NOT_IMPLEMENTED`; The allowed statuses are `NOT_IMPLEMENTED`, `IN_PROGRESS`, and `COMPLETED`.
 
 ## Use Case Summary
 
@@ -14,7 +14,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 | UC-004 | Leave a Structured Product Review | COMPLETED |
 | UC-005 | Read a Product's Reviews | COMPLETED |
 | UC-006 | Generate a Product's AI Review Summary | COMPLETED |
-| UC-007 | Read a Product's AI Review Summary | NOT_IMPLEMENTED |
+| UC-007 | Read a Product's AI Review Summary | COMPLETED |
 
 ## Detailed Use Cases
 
@@ -107,7 +107,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 
 ### UC-007 — Read a Product's AI Review Summary
 
-- **Status:** NOT_IMPLEMENTED
+- **Status:** COMPLETED
 - **Depends On:** UC-003, UC-006
 - **Description:** A visitor or maker reads the AI summary alongside access to the underlying product reviews, gaining an overview of the feedback. The product mockup illustrates a clearly labeled AI summary with separate positive and improvement themes.
 - **Acceptance Criteria:**
@@ -116,6 +116,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
   - The experience identifies the summary as AI-generated feedback.
   - The summary displayed belongs to the product being viewed.
   - A visitor reading the summary can also access the individual reviews for that product.
+  - When no summary exists, show “AI summary not available yet” while keeping individual reviews visible.
 
 ## Mockup Details and Product Decisions
 
@@ -133,7 +134,7 @@ The user confirmed login-required submission, the mockup submission fields and l
 | Ratings | [review.html](../mockup/review.html) offers integer ratings from 0 through 5 with 5 initially selected. [app.js](../mockup/app.js) calculates an arithmetic average; [product.html](../mockup/product.html) shows it to one decimal place, a review count, and counts for each rating. | Numeric ratings and aggregate statistics are absent from the PRD. Confirm their inclusion, default selection, rounding, and behavior for unrated products before making them requirements. |
 | Review presentation | [product.html](../mockup/product.html) and [app.js](../mockup/app.js) show author, date, rating, and both feedback areas; product reviews appear in descending date order. | Confirmed for UC-005: show only the two feedback fields, without reviewer identity or dates; newest first with descending review ID breaking timestamp ties. |
 | Products without reviews | [product.html](../mockup/product.html) displays a dash instead of an average, a zero review count, and a “No reviews yet” invitation. | The PRD explicitly leaves the no-review presentation open; confirm this proposed state. |
-| Summary eligibility | [product.html](../mockup/product.html), [about.html](../mockup/about.html), and [app.js](../mockup/app.js) propose an unavailable-summary message until at least two reviews exist, with separate liked and improvement lists when a summary is available. | Confirmed for UC-006: automatically generate in the background after each committed review, starting at three reviews, using Spring AI with OpenAI. Retry invalid structured output twice and preserve any previous summary after exhaustion or provider failure. Public presentation and pending states remain in UC-007. |
+| Summary eligibility | [product.html](../mockup/product.html), [about.html](../mockup/about.html), and [app.js](../mockup/app.js) propose an unavailable-summary message until at least two reviews exist, with separate liked and improvement lists when a summary is available. | Confirmed for UC-006: automatically generate in the background after each committed review, starting at three reviews, using Spring AI with OpenAI. Retry invalid structured output twice and preserve any previous summary after exhaustion or provider failure. Confirmed for UC-007: show “AI summary not available yet” when no summary exists, with individual reviews remaining visible. |
 | Personal activity and logout | [profile.html](../mockup/profile.html) proposes a protected profile showing name, email, submission and review counts, “My products,” “My reviews,” links to the relevant products, empty-state actions, and logout returning home. | Profiles and logout are not specified in the PRD. Confirm account and personal-activity scope and ownership rules. Matching display names in demo data is not an approved identity rule. |
 | Informational and missing-page flows | [about.html](../mockup/about.html) explains the feedback loop; [404.html](../mockup/404.html) links home. Missing products show a browse link in [product.html](../mockup/product.html), while [review.html](../mockup/review.html) redirects to products. | Confirm informational-page scope and missing-product behavior before treating these flows as requirements. |
 

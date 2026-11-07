@@ -2,12 +2,14 @@ package dev.sivalabs.reviewbuddy.products.domain;
 
 import dev.sivalabs.reviewbuddy.products.domain.models.ReviewSubmitted;
 import dev.sivalabs.reviewbuddy.products.domain.models.ReviewSummaryDto;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.StructuredOutputValidationAdvisor;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.json.JsonMapper;
 
 @Service
@@ -35,6 +37,11 @@ public class ReviewSummaryService {
                                 """)
                 .build();
         this.json = json;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<ReviewSummaryDto> findSummaryByProductId(Long productId) {
+        return summaries.findByProductId(productId);
     }
 
     @ApplicationModuleListener

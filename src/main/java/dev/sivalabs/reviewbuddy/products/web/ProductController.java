@@ -2,6 +2,7 @@ package dev.sivalabs.reviewbuddy.products.web;
 
 import dev.sivalabs.reviewbuddy.products.domain.ProductService;
 import dev.sivalabs.reviewbuddy.products.domain.ReviewService;
+import dev.sivalabs.reviewbuddy.products.domain.ReviewSummaryService;
 import dev.sivalabs.reviewbuddy.products.domain.models.CreateProductCmd;
 import dev.sivalabs.reviewbuddy.products.domain.models.FindProductsQuery;
 import jakarta.validation.Valid;
@@ -20,9 +21,13 @@ class ProductController {
 
     private final ReviewService reviewService;
 
-    ProductController(ProductService productService, ReviewService reviewService) {
+    private final ReviewSummaryService reviewSummaryService;
+
+    ProductController(
+            ProductService productService, ReviewService reviewService, ReviewSummaryService reviewSummaryService) {
         this.productService = productService;
         this.reviewService = reviewService;
+        this.reviewSummaryService = reviewSummaryService;
     }
 
     @GetMapping("/products/submit")
@@ -57,6 +62,8 @@ class ProductController {
     String productDetails(@PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findProductById(id));
         model.addAttribute("reviews", reviewService.findReviewsByProductId(id));
+        model.addAttribute(
+                "reviewSummary", reviewSummaryService.findSummaryByProductId(id).orElse(null));
         return "product";
     }
 

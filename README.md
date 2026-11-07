@@ -64,5 +64,6 @@ once it has at least three. Invalid structured output is retried twice (three to
 Provider failures retain the previous summary without service-level retries.
 If all attempts fail, the previous summary is retained; the next review triggers a
 new generation attempt. Summaries are persisted per product, and an older snapshot
-cannot overwrite one based on more reviews. Public display is tracked separately
-under UC-007.
+cannot overwrite one based on more reviews. Each public product page displays its saved AI-generated summary with separate
+liked and improvement feedback alongside the individual reviews. When no summary
+exists, it shows “AI summary not available yet.” Reading summaries requires no login.
