@@ -52,3 +52,17 @@ command = 'npx'
 * [Addy Osmani Agent Skills](https://github.com/addyosmani/agent-skills)
 * [Piotr Mińkowski Spring Boot Skills](https://github.com/piomin/claude-ai-spring-boot)
 * [Rrezart Prebreza Spring Boot Skills](https://github.com/rrezartprebreza/spring-boot-skills)
+
+## AI review summaries
+
+Set `OPENAI_API_KEY` before starting the application. Optionally set `OPENAI_MODEL`
+(default: `gpt-4o-mini`). Reviews are sent to OpenAI as feedback text only, without
+reviewer identities. Tests use stubbed AI responses and require no OpenAI access.
+
+After each review commits, a background task summarizes all reviews for that product
+once it has at least three. Invalid structured output is retried twice (three total attempts) by Spring AI’s validation advisor.
+Provider failures retain the previous summary without service-level retries.
+If all attempts fail, the previous summary is retained; the next review triggers a
+new generation attempt. Summaries are persisted per product, and an older snapshot
+cannot overwrite one based on more reviews. Public display is tracked separately
+under UC-007.

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
     <relativePath/>
     <!-- lookup parent from repository -->
   </parent>
@@ -15,21 +15,29 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>25</java.version>
-    <spring-modulith.version>2.1.1</spring-modulith.version>
+    <spring-ai.version>2.0.2</spring-ai.version>
+    <spring-modulith.version>2.1.2</spring-modulith.version>
     <font_awesome.version>7.3.0</font_awesome.version>
-    <htmx.org.version>4.0.0</htmx.org.version>
-    <htmx-spring-boot-thymeleaf.version>6.0.0</htmx-spring-boot-thymeleaf.version>
-    <bootui.version>2.1.0</bootui.version>
-    <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+    <htmx.org.version>4.0.1</htmx.org.version>
+    <htmx-spring-boot-thymeleaf.version>6.0.1</htmx-spring-boot-thymeleaf.version>
+    <bootui.version>2.3.0</bootui.version>
+    <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
     <jacoco.minimum.coverage>40%</jacoco.minimum.coverage>
-    <palantir-java-format.version>2.100.0</palantir-java-format.version>
-    <spotless.version>3.10.4</spotless.version>
+    <palantir-java-format.version>2.103.0</palantir-java-format.version>
+    <spotless.version>3.11.0</spotless.version>
     <archunit.version>1.5.1</archunit.version>
-    <taikai.version>2.0.0</taikai.version>
+    <taikai.version>2.8.0</taikai.version>
     <dockerImageName>sivaprasadreddy/review-buddy</dockerImageName>
   </properties>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-bom</artifactId>
+        <version>${spring-ai.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.modulith</groupId>
         <artifactId>spring-modulith-bom</artifactId>
@@ -40,6 +48,10 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <dependency>
+      <groupId>org.springframework.ai</groupId>
+      <artifactId>spring-ai-starter-model-openai</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webmvc</artifactId>
@@ -315,6 +327,7 @@
             <sortPom>
               <keepBlankLines>false</keepBlankLines>
               <expandEmptyElements>false</expandEmptyElements>
+              <nrOfIndentSpace>2</nrOfIndentSpace>
             </sortPom>
           </pom>
         </configuration>

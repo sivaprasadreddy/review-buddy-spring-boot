@@ -13,7 +13,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 | UC-003 | View a Product for Review | COMPLETED |
 | UC-004 | Leave a Structured Product Review | COMPLETED |
 | UC-005 | Read a Product's Reviews | COMPLETED |
-| UC-006 | Generate a Product's AI Review Summary | NOT_IMPLEMENTED |
+| UC-006 | Generate a Product's AI Review Summary | COMPLETED |
 | UC-007 | Read a Product's AI Review Summary | NOT_IMPLEMENTED |
 
 ## Detailed Use Cases
@@ -91,7 +91,7 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
 
 ### UC-006 — Generate a Product's AI Review Summary
 
-- **Status:** NOT_IMPLEMENTED
+- **Status:** COMPLETED
 - **Depends On:** UC-004
 - **Description:** Review Buddy generates an AI summary of a product's reviews to help the maker understand the overall feedback. The mockup illustrates themes grouped into likes and improvements; its hard-coded sample summaries are presentation examples, not an implementation of this capability.
 - **Acceptance Criteria:**
@@ -101,6 +101,9 @@ All newly derived use cases start as `NOT_IMPLEMENTED`; this is a planning statu
   - The summary conveys overall feedback about what reviewers liked.
   - The summary conveys overall feedback about what reviewers thought could be improved.
   - The generated summary remains associated with the product whose reviews were summarized.
+  - After each committed review, generation runs automatically in the background when the product has at least three reviews, using Spring AI with OpenAI.
+  - Invalid structured output is retried twice (three total attempts) by StructuredOutputValidationAdvisor; exhaustion or provider failure preserves any previous summary.
+  - A summary based on fewer reviews cannot overwrite one based on more reviews.
 
 ### UC-007 — Read a Product's AI Review Summary
 
@@ -130,7 +133,7 @@ The user confirmed login-required submission, the mockup submission fields and l
 | Ratings | [review.html](../mockup/review.html) offers integer ratings from 0 through 5 with 5 initially selected. [app.js](../mockup/app.js) calculates an arithmetic average; [product.html](../mockup/product.html) shows it to one decimal place, a review count, and counts for each rating. | Numeric ratings and aggregate statistics are absent from the PRD. Confirm their inclusion, default selection, rounding, and behavior for unrated products before making them requirements. |
 | Review presentation | [product.html](../mockup/product.html) and [app.js](../mockup/app.js) show author, date, rating, and both feedback areas; product reviews appear in descending date order. | Confirmed for UC-005: show only the two feedback fields, without reviewer identity or dates; newest first with descending review ID breaking timestamp ties. |
 | Products without reviews | [product.html](../mockup/product.html) displays a dash instead of an average, a zero review count, and a “No reviews yet” invitation. | The PRD explicitly leaves the no-review presentation open; confirm this proposed state. |
-| Summary eligibility | [product.html](../mockup/product.html), [about.html](../mockup/about.html), and [app.js](../mockup/app.js) propose an unavailable-summary message until at least two reviews exist, with separate liked and improvement lists when a summary is available. | The PRD explicitly leaves low-review-count handling open. Confirm the threshold, generation trigger, refresh after new reviews, pending state, and failure or retry behavior. The prototype also lacks some summaries despite having two reviews, so availability cannot be inferred from the threshold alone. |
+| Summary eligibility | [product.html](../mockup/product.html), [about.html](../mockup/about.html), and [app.js](../mockup/app.js) propose an unavailable-summary message until at least two reviews exist, with separate liked and improvement lists when a summary is available. | Confirmed for UC-006: automatically generate in the background after each committed review, starting at three reviews, using Spring AI with OpenAI. Retry invalid structured output twice and preserve any previous summary after exhaustion or provider failure. Public presentation and pending states remain in UC-007. |
 | Personal activity and logout | [profile.html](../mockup/profile.html) proposes a protected profile showing name, email, submission and review counts, “My products,” “My reviews,” links to the relevant products, empty-state actions, and logout returning home. | Profiles and logout are not specified in the PRD. Confirm account and personal-activity scope and ownership rules. Matching display names in demo data is not an approved identity rule. |
 | Informational and missing-page flows | [about.html](../mockup/about.html) explains the feedback loop; [404.html](../mockup/404.html) links home. Missing products show a browse link in [product.html](../mockup/product.html), while [review.html](../mockup/review.html) redirects to products. | Confirm informational-page scope and missing-product behavior before treating these flows as requirements. |
 
@@ -140,6 +143,6 @@ The user confirmed login-required submission, the mockup submission fields and l
 - **Repeat reviews:** Confirmed for UC-004: at most one review per account per product.
 - **Review lifecycle:** Editing, deleting, and maker responses to reviews remain open questions. No update, deletion, or response use cases are committed here.
 - **Abuse prevention:** MVP spam and abusive-review controls are undecided. Advanced moderation remains excluded.
-- **Summary fidelity:** Accurate representation is a stated risk, but the PRD supplies no measurable quality threshold or evaluation method. Summary refresh timing and failure behavior also need decisions before they can receive precise acceptance criteria.
+- **Summary fidelity:** Accurate representation is a stated risk, but the PRD supplies no measurable quality threshold or evaluation method. Confirmed for UC-006: refresh after each committed review once three reviews exist; retry invalid structured output twice and retain the prior summary after exhaustion or provider failure.
 - **Meaningful feedback and success measurement:** The PRD names maker return behavior and meaningful reviews as success metrics, but does not define a meaningful-review threshold or require analytics instrumentation. These metrics do not establish extra product flows.
 - **Demo boundaries:** Browser-only storage, acceptance of arbitrary login credentials, seeded reviews, external sample images, fabricated names, and canned summaries demonstrate the mockups. They are not production requirements or privacy guarantees.

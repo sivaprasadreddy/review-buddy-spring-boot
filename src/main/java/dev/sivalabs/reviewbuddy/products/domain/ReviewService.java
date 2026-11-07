@@ -1,9 +1,11 @@
 package dev.sivalabs.reviewbuddy.products.domain;
 
 import dev.sivalabs.reviewbuddy.products.domain.models.ReviewDto;
+import dev.sivalabs.reviewbuddy.products.domain.models.ReviewSubmitted;
 import dev.sivalabs.reviewbuddy.shared.ResourceNotFoundException;
 import dev.sivalabs.reviewbuddy.users.UsersAPI;
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,11 +15,14 @@ public class ReviewService {
     private final ProductRepository products;
     private final ReviewRepository reviews;
     private final UsersAPI users;
+    private final ApplicationEventPublisher events;
 
-    ReviewService(ProductRepository products, ReviewRepository reviews, UsersAPI users) {
+    ReviewService(
+            ProductRepository products, ReviewRepository reviews, UsersAPI users, ApplicationEventPublisher events) {
         this.products = products;
         this.reviews = reviews;
         this.users = users;
+        this.events = events;
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +54,7 @@ public class ReviewService {
             throw new IllegalArgumentException("Both feedback fields must contain 1 to 400 characters");
         }
         reviews.saveAndFlush(new ReviewEntity(productId, reviewerId, liked, improvements));
+        events.publishEvent(new ReviewSubmitted(productId));
     }
 
     private Long currentReviewer() {
